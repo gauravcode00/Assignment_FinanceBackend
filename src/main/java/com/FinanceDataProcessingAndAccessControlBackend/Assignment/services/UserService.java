@@ -8,6 +8,7 @@ import com.FinanceDataProcessingAndAccessControlBackend.Assignment.exceptions.Du
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.models.User;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto registerUser(UserRegistrationDto dto){
 
@@ -24,7 +26,7 @@ public class UserService {
 
         User user = User.builder()
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .role(dto.getRole())
                 .status(UserStatus.ACTIVE)
                 .build();
