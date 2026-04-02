@@ -2,6 +2,7 @@ package com.FinanceDataProcessingAndAccessControlBackend.Assignment.controllers;
 
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.FinancialRecordRequestDto;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.FinancialRecordResponseDto;
+import com.FinanceDataProcessingAndAccessControlBackend.Assignment.enums.RecordType;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.models.User;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.services.FinancialRecordService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,11 +34,16 @@ public class FinancialRecordController {
         return new ResponseEntity<>(createdRecord, HttpStatus.CREATED);
     }
 
-    // READ ALL (ADMIN and ANALYST only - Viewers cannot access raw records)
+    // Updated READ with Filtering
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'ANALYST')")
-    public ResponseEntity<List<FinancialRecordResponseDto>> getAllRecords() {
-        return ResponseEntity.ok(recordService.getAllRecords());
+    public ResponseEntity<List<FinancialRecordResponseDto>> getRecords(
+            @RequestParam(required = false) RecordType type,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate) {
+
+        return ResponseEntity.ok(recordService.getFilteredRecords(type, category, startDate, endDate));
     }
 
     // UPDATE (Strictly ADMIN only)

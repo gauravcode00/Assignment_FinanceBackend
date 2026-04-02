@@ -2,11 +2,15 @@ package com.FinanceDataProcessingAndAccessControlBackend.Assignment.services;
 
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.FinancialRecordRequestDto;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.FinancialRecordResponseDto;
+import com.FinanceDataProcessingAndAccessControlBackend.Assignment.enums.RecordType;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.models.FinancialRecord;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.models.User;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.repositories.FinancialRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -79,5 +83,13 @@ public class FinancialRecordService {
         // Save and return
         FinancialRecord updatedRecord = recordRepository.save(existingRecord);
         return mapToResponseDto(updatedRecord);
+    }
+
+    // 5. filterinng records
+    public List<FinancialRecordResponseDto> getFilteredRecords(RecordType type, String category, LocalDate startDate, LocalDate endDate) {
+        return recordRepository.filterRecords(type, category, startDate, endDate)
+                .stream()
+                .map(this::mapToResponseDto)
+                .toList();
     }
 }

@@ -5,6 +5,7 @@ import com.FinanceDataProcessingAndAccessControlBackend.Assignment.enums.RecordT
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -27,6 +28,18 @@ public interface FinancialRecordRepository extends JpaRepository<FinancialRecord
     // Calculate total Expense
     @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(f.amount), 0) FROM FinancialRecord f WHERE f.type = 'EXPENSE'")
     java.math.BigDecimal getTotalExpense();
+
+    // for filtering the data
+    @org.springframework.data.jpa.repository.Query("SELECT f FROM FinancialRecord f WHERE " +
+            "(:type IS NULL OR f.type = :type) AND " +
+            "(:category IS NULL OR f.category = :category) AND " +
+            "(:startDate IS NULL OR f.date >= :startDate) AND " +
+            "(:endDate IS NULL OR f.date <= :endDate)")
+    List<FinancialRecord> filterRecords(
+            @org.springframework.data.repository.query.Param("type") RecordType type,
+            @org.springframework.data.repository.query.Param("category") String category,
+            @org.springframework.data.repository.query.Param("startDate") LocalDate startDate,
+            @org.springframework.data.repository.query.Param("endDate") LocalDate endDate);
 
     // Get the 5 most recent transactions (Spring Data JPA automatically understands this method name!)
     List<FinancialRecord> findTop5ByOrderByDateDescCreatedAtDesc();
