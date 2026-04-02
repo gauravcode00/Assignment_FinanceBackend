@@ -18,4 +18,16 @@ public interface FinancialRecordRepository extends JpaRepository<FinancialRecord
 
     // Find all records for a specific category
     List<FinancialRecord> findByCategory(String category);
+
+
+    // Calculate total Income
+    @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(f.amount), 0) FROM FinancialRecord f WHERE f.type = 'INCOME'")
+    java.math.BigDecimal getTotalIncome();
+
+    // Calculate total Expense
+    @org.springframework.data.jpa.repository.Query("SELECT COALESCE(SUM(f.amount), 0) FROM FinancialRecord f WHERE f.type = 'EXPENSE'")
+    java.math.BigDecimal getTotalExpense();
+
+    // Get the 5 most recent transactions (Spring Data JPA automatically understands this method name!)
+    List<FinancialRecord> findTop5ByOrderByDateDescCreatedAtDesc();
 }
