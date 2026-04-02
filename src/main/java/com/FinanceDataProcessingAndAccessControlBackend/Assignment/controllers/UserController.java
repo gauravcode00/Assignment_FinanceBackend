@@ -1,6 +1,8 @@
 package com.FinanceDataProcessingAndAccessControlBackend.Assignment.controllers;
 
 
+import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.AuthResponseDto;
+import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.LoginRequestDto;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.UserRegistrationDto;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.UserResponseDto;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.services.UserService;
@@ -26,6 +28,12 @@ public class UserController {
         UserResponseDto createdUser = userService.registerUser(registrationDto); // calling userService
 
         return  new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody LoginRequestDto loginDto) {
+        AuthResponseDto authResponse = userService.loginUser(loginDto);
+        return ResponseEntity.ok(authResponse);
     }
 
 }
