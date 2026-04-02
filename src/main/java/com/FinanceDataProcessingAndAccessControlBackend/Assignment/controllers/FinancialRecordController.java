@@ -4,6 +4,7 @@ import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.Financia
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.dtos.FinancialRecordResponseDto;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.models.User;
 import com.FinanceDataProcessingAndAccessControlBackend.Assignment.services.FinancialRecordService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class FinancialRecordController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<FinancialRecordResponseDto> createRecord(@RequestBody FinancialRecordRequestDto requestDto, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<FinancialRecordResponseDto> createRecord(@Valid @RequestBody FinancialRecordRequestDto requestDto, @AuthenticationPrincipal User currentUser) {
         // AuthenticationPrincipal  annotation reads the SecurityContext and send me the current logined user
 
 
@@ -43,7 +44,7 @@ public class FinancialRecordController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FinancialRecordResponseDto> updateRecord(
             @PathVariable Long id,
-            @RequestBody FinancialRecordRequestDto requestDto) {
+            @Valid @RequestBody FinancialRecordRequestDto requestDto) {
 
         return ResponseEntity.ok(recordService.updateRecord(id, requestDto));
     }
