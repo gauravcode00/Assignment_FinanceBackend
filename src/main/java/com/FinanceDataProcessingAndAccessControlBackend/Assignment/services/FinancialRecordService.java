@@ -47,5 +47,37 @@ public class FinancialRecordService {
                 .build();
     }
 
+    // 2. READ ALL RECORDS
+    public java.util.List<FinancialRecordResponseDto> getAllRecords() {
+        return recordRepository.findAll()
+                .stream()
+                .map(this::mapToResponseDto)
+                .toList(); // Note: toList() is available in Java 16+
+    }
 
+    // 3. DELETE RECORD
+    public void deleteRecord(Long id) {
+        if (!recordRepository.existsById(id)) {
+            throw new RuntimeException("Record not found with ID: " + id);
+        }
+        recordRepository.deleteById(id);
+    }
+
+    // 4. UPDATE RECORD
+    public FinancialRecordResponseDto updateRecord(Long id, FinancialRecordRequestDto requestDto) {
+        // Find the existing record
+        FinancialRecord existingRecord = recordRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Record not found with ID: " + id));
+
+        // Update the fields
+        existingRecord.setAmount(requestDto.getAmount());
+        existingRecord.setType(requestDto.getType());
+        existingRecord.setCategory(requestDto.getCategory());
+        existingRecord.setDate(requestDto.getDate());
+        existingRecord.setNotes(requestDto.getNotes());
+
+        // Save and return
+        FinancialRecord updatedRecord = recordRepository.save(existingRecord);
+        return mapToResponseDto(updatedRecord);
+    }
 }
